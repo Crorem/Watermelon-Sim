@@ -40,6 +40,14 @@ hyperactive.src = "imgs/hyperactive.png";
 
 melon.src = "imgs/melon.png";
 
+var Attributes =
+{
+	HUNGER: 0,
+	FATIGUE: 1,
+	REBELLIOUSNESS: 2,
+	BOREDOM: 3
+}
+
 melon.onload = function() 
 { 
     ctx.drawImage(melon,0,250);
@@ -50,28 +58,20 @@ ctx.textAlign="center";
 	  
 MULTIPLIER = .5;
 
-hunger = 0.;
-fatigue = 0.; 
-discipline = 0.; 
-fun = 0.;
+var attributeCurrent  = [0., 0., 0., 0.];
+var attributeFloor    = new Array(Object.keys(Attributes).length);
+var attributeCeiling  = new Array(Object.keys(Attributes).length);
+var attributeIncrease = new Array(Object.keys(Attributes).length);
+var attributeDecrease = new Array(Object.keys(Attributes).length);
 
-hungerBottom = -1*((Math.random() * 5. + 1.) + (Math.random() * 5. + 1.));
-hungerTop = ((Math.random() * 5. + 1.) + (Math.random() * 5. + 1.));
-fatigueBottom = -1*((Math.random() * 5. + 1.) + (Math.random() * 5. + 1.));
-fatigueTop = ((Math.random() * 5. + 1.) + (Math.random() * 5. + 1.));
-disciplineBottom = -1*((Math.random() * 5. + 1.) + (Math.random() * 5. + 1.));
-disciplineTop = ((Math.random() * 5. + 1.) + (Math.random() * 5. + 1.));
-funBottom = -1*((Math.random() * 5. + 1.) + (Math.random() * 5. + 1.));
-funTop = ((Math.random() * 5. + 1.) + (Math.random() * 5. + 1.));
-
-hUp = Math.random() * 1.5 + 0.5;
-hDown = Math.random() * 1.5 + 0.5;
-fatUp = Math.random() * 1.5 + 0.5;
-fatDown = Math.random() * 1.5 + 0.5;
-dUp = Math.random() * 1.5 + 0.5;
-dDown = Math.random() * 1.5 + 0.5;
-funUp = Math.random() * 1.5 + 0.5;
-funDown = Math.random() * 1.5 + 0.5;
+for(var i = 0; i < Object.keys(Attributes).length; i++)
+{
+	attributeFloor  [i] = -1*((Math.random() * 5. + 1.) + (Math.random() * 5. + 1.));
+	attributeCeiling[i] =    ((Math.random() * 5. + 1.) + (Math.random() * 5. + 1.));
+	
+	attributeIncrease[i] = Math.random() * 1.5 + 0.5;
+	attributeDecrease[i] = Math.random() * 1.5 + 0.5;
+}
 
 dead = false;
 turns = 0;
@@ -138,69 +138,68 @@ function checkDeath()
         explosion = 0;
         return EXPLODE;        
     }*/
-    if (hunger < hungerBottom){
+    if (attributeCurrent[Attributes.HUNGER] < attributeFloor[Attributes.HUNGER]){
 		deathPrint("Your watermelon exploded from eating too much!");}
-    if (hunger > hungerTop){
+    if (attributeCurrent[Attributes.HUNGER] > attributeCeiling[Attributes.HUNGER]){
 		deathPrint("Your watermelon died of starvation!");}
-    if (fatigue < fatigueBottom){
+    if (attributeCurrent[Attributes.FATIGUE] < attributeFloor[Attributes.FATIGUE]){
 		deathPrint("Your watermelon died from laziness!");}
-    if (fatigue > fatigueTop){
+    if (attributeCurrent[Attributes.FATIGUE] > attributeCeiling[Attributes.FATIGUE]){
 		deathPrint("Your watermelon died from fatigue!");}
-    if (discipline < disciplineBottom){ 
-		deathPrint("Your watermelon died from anarchy!");}
-    if (discipline > disciplineTop){ 
-		deathPrint("Your watermelon died from blunt force tramua!");}
-    if (fun < funBottom){ 
+    if (attributeCurrent[Attributes.REBELLIOUSNESS] < attributeFloor[Attributes.REBELLIOUSNESS]){ 
 		deathPrint("Your watermelon died from blunt force trauma!");}
-		deathPrint("Your watermelon died from boredom!");}
-    if (fun > funTop){ 
+    if (attributeCurrent[Attributes.REBELLIOUSNESS] > attributeCeiling[Attributes.REBELLIOUSNESS]){ 
+		deathPrint("Your watermelon died from anarchy!");}
+    if (attributeCurrent[Attributes.BOREDOM] < attributeFloor[Attributes.BOREDOM]){ 
 		deathPrint("Your watermelon died from excitement!");}
+    if (attributeCurrent[Attributes.BOREDOM] > attributeCeiling[Attributes.BOREDOM]){ 
+		deathPrint("Your watermelon died from boredom!");}
 };
 
 function checkStatus()
 {
 	outputState = 0;
 
-	if(hunger < .33 * hungerTop && hunger > .33 * hungerBottom){
+	if(attributeCurrent[Attributes.HUNGER] < .33 * attributeCeiling[Attributes.HUNGER] && attributeCurrent[Attributes.HUNGER] > .33 * attributeFloor[Attributes.HUNGER]){
 		s1 = "";}
-    if(hunger <= .33 * hungerBottom && hunger > .66 * hungerBottom){
+    if(attributeCurrent[Attributes.HUNGER] <= .33 * attributeFloor[Attributes.HUNGER] && attributeCurrent[Attributes.HUNGER] > .66 * attributeFloor[Attributes.HUNGER]){
         s1 = "Your watermelon is satisfied!";}
-    if(hunger <= .66 * hungerBottom){
+    if(attributeCurrent[Attributes.HUNGER] <= .66 * attributeFloor[Attributes.HUNGER]){
         s1 = "Your watermelon is stuffed!";}
-    if(hunger >= .33 * hungerTop && hunger < .66 * hungerTop){
+    if(attributeCurrent[Attributes.HUNGER] >= .33 * attributeCeiling[Attributes.HUNGER] && attributeCurrent[Attributes.HUNGER] < .66 * attributeCeiling[Attributes.HUNGER]){
         s1 = "Your watermelon is hungry!";}
-    if(hunger >= .66 * hungerTop){
+    if(attributeCurrent[Attributes.HUNGER] >= .66 * attributeCeiling[Attributes.HUNGER]){
         s1 = "Your watermelon is starving!";}
-	if(fatigue < .33 * fatigueTop && fatigue > .33 * fatigueBottom){
+	if(attributeCurrent[Attributes.FATIGUE] < .33 * attributeCeiling[Attributes.FATIGUE] && attributeCurrent[Attributes.FATIGUE] > .33 * attributeFloor[Attributes.FATIGUE]){
 		s2 = "";}
-    if(fatigue <= .33 * fatigueBottom && fatigue > .66 * fatigueBottom){
+    if(attributeCurrent[Attributes.FATIGUE] <= .33 * attributeFloor[Attributes.FATIGUE] && attributeCurrent[Attributes.FATIGUE] > .66 * attributeFloor[Attributes.FATIGUE]){
         s2 = "Your watermelon is lazy!";}
-    if(fatigue <= .66 * fatigueBottom){
+    if(attributeCurrent[Attributes.FATIGUE] <= .66 * attributeFloor[Attributes.FATIGUE]){
         s2 = "Your watermelon is loafing!";}
-    if(fatigue >= .33 * fatigueTop && fatigue < .66 * fatigueTop){
+    if(attributeCurrent[Attributes.FATIGUE] >= .33 * attributeCeiling[Attributes.FATIGUE] && attributeCurrent[Attributes.FATIGUE] < .66 * attributeCeiling[Attributes.FATIGUE]){
         s2= "Your watermelon is tired!";}
-    if(fatigue >= .66 * fatigueTop){
+    if(attributeCurrent[Attributes.FATIGUE] >= .66 * attributeCeiling[Attributes.FATIGUE]){
         s2 = "Your watermelon is comatose!";}
-	if(discipline < .33 * disciplineTop && discipline > .33 * disciplineBottom){
+	if(attributeCurrent[Attributes.REBELLIOUSNESS] < .33 * attributeCeiling[Attributes.REBELLIOUSNESS] && attributeCurrent[Attributes.REBELLIOUSNESS] > .33 * attributeFloor[Attributes.REBELLIOUSNESS]){
 		s3 = "";}
-    if(discipline <= .33 * disciplineBottom && discipline > .66 * disciplineBottom){
-        s3 = "Your watermelon is rebelling!"}
-    if(discipline <= .66 * disciplineBottom){
-        s3 = "Your watermelon is revolting!";}
-    if(discipline >= .33 * disciplineTop && discipline < .66 * disciplineTop){
+    if(attributeCurrent[Attributes.REBELLIOUSNESS] <= .33 * attributeFloor[Attributes.REBELLIOUSNESS] && attributeCurrent[Attributes.REBELLIOUSNESS] > .66 * attributeFloor[Attributes.REBELLIOUSNESS]){
         s3 = "Your watermelon is bruised!";}
-    if(discipline >= .66 * disciplineTop){
+    if(attributeCurrent[Attributes.REBELLIOUSNESS] <= .66 * attributeFloor[Attributes.REBELLIOUSNESS]){
         s3 = "Your watermelon is battered!";}
-	if(fun < .33 * funTop && fun > .33 * funBottom){
+    if(attributeCurrent[Attributes.REBELLIOUSNESS] >= .33 * attributeCeiling[Attributes.REBELLIOUSNESS] && attributeCurrent[Attributes.REBELLIOUSNESS] < .66 * attributeCeiling[Attributes.REBELLIOUSNESS]){
+        s3= "Your watermelon is rebelling!";}
+    if(attributeCurrent[Attributes.REBELLIOUSNESS] >= .66 * attributeCeiling[Attributes.REBELLIOUSNESS]){
+        s3 = "Your watermelon is revolting!";}
+	if(attributeCurrent[Attributes.BOREDOM] < .33 * attributeCeiling[Attributes.BOREDOM] && attributeCurrent[Attributes.BOREDOM] > .33 * attributeFloor[Attributes.BOREDOM]){
 		s4 = "";}
-    if(fun <= .33 * funBottom && fun > .66 * funBottom){
-        s4 = "Your watermelon is bored!";}
-    if(fun <= .66 * funBottom){
-        s4 = "Your watermelon is spiritless!";}
-    if(fun >= .33 * funTop && fun < .66 * funTop){
+    if(attributeCurrent[Attributes.BOREDOM] <= .33 * attributeFloor[Attributes.BOREDOM] && attributeCurrent[Attributes.BOREDOM] > .66 * attributeFloor[Attributes.BOREDOM]){
         s4 = "Your watermelon is excited!";}
-    if(fun >= .66 * funTop){
+    if(attributeCurrent[Attributes.BOREDOM] <= .66 * attributeFloor[Attributes.BOREDOM]){
         s4 = "Your watermelon is hyperactive!";}
+    if(attributeCurrent[Attributes.BOREDOM] >= .33 * attributeCeiling[Attributes.BOREDOM] && attributeCurrent[Attributes.BOREDOM] < .66 * attributeCeiling[Attributes.BOREDOM]){
+        s4 = "Your watermelon is bored!";}
+    if(attributeCurrent[Attributes.BOREDOM] >= .66 * attributeCeiling[Attributes.BOREDOM]){
+        s4 = "Your watermelon is spiritless!";}
 		
 	if(s1 != ""){ outputState += 1; }
 	if(s2 != ""){ outputState += 2; }
@@ -289,10 +288,10 @@ function feed()
 {
 	if(dead == false)
 	{
-		hunger -= hDown;
-		fatigue += fatUp * MULTIPLIER;
-		discipline -= dDown * MULTIPLIER;
-		fun -= funDown * MULTIPLIER;
+		attributeCurrent[Attributes.HUNGER] -= attributeDecrease[Attributes.HUNGER];
+		attributeCurrent[Attributes.FATIGUE] += attributeIncrease[Attributes.FATIGUE] * MULTIPLIER;
+		attributeCurrent[Attributes.REBELLIOUSNESS] += attributeIncrease[Attributes.REBELLIOUSNESS] * MULTIPLIER;
+		attributeCurrent[Attributes.BOREDOM] += attributeIncrease[Attributes.BOREDOM] * MULTIPLIER;
 		updateTicker();
 		checkDeath();
 		if(dead == false){turns++; drawMelon();}
@@ -303,10 +302,10 @@ function sleep()
 {
 	if(dead == false)
 	{
-		hunger += hUp * MULTIPLIER;
-		fatigue -= fatDown;
-		discipline -= dDown * MULTIPLIER;
-		fun -= funDown * MULTIPLIER;    
+		attributeCurrent[Attributes.HUNGER] += attributeIncrease[Attributes.HUNGER] * MULTIPLIER;
+		attributeCurrent[Attributes.FATIGUE] -= attributeDecrease[Attributes.FATIGUE];
+		attributeCurrent[Attributes.REBELLIOUSNESS] += attributeIncrease[Attributes.REBELLIOUSNESS] * MULTIPLIER;
+		attributeCurrent[Attributes.BOREDOM] += attributeIncrease[Attributes.BOREDOM] * MULTIPLIER;    
 		updateTicker();
 		checkDeath();
 		if(dead == false){turns++; drawMelon();}
@@ -317,10 +316,10 @@ function disc()
 {
 	if(dead == false)
 	{
-		hunger += hUp * MULTIPLIER;
-		fatigue += fatUp * MULTIPLIER;
-		discipline += dUp;
-		fun -= funDown * MULTIPLIER;   
+		attributeCurrent[Attributes.HUNGER] += attributeIncrease[Attributes.HUNGER] * MULTIPLIER;
+		attributeCurrent[Attributes.FATIGUE] += attributeIncrease[Attributes.FATIGUE] * MULTIPLIER;
+		attributeCurrent[Attributes.REBELLIOUSNESS] -= attributeDecrease[Attributes.REBELLIOUSNESS];
+		attributeCurrent[Attributes.BOREDOM] += attributeIncrease[Attributes.BOREDOM] * MULTIPLIER;   
 		updateTicker();
 		checkDeath();
 		if(dead == false){turns++; drawMelon();}
@@ -331,10 +330,10 @@ function play()
 {
 	if(dead == false)
 	{
-		hunger += hUp * MULTIPLIER;
-		fatigue += fatUp * MULTIPLIER;
-		discipline -= dDown * MULTIPLIER;
-		fun += funUp;
+		attributeCurrent[Attributes.HUNGER] += attributeIncrease[Attributes.HUNGER] * MULTIPLIER;
+		attributeCurrent[Attributes.FATIGUE] += attributeIncrease[Attributes.FATIGUE] * MULTIPLIER;
+		attributeCurrent[Attributes.REBELLIOUSNESS] += attributeIncrease[Attributes.REBELLIOUSNESS] * MULTIPLIER;
+		attributeCurrent[Attributes.BOREDOM] -= attributeDecrease[Attributes.BOREDOM];
 		updateTicker();
 		checkDeath();
 		if(dead == false){turns++; drawMelon();}
