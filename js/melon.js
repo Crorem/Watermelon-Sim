@@ -56,7 +56,8 @@ melon.onload = function()
 ctx.font="20px Ariel";
 ctx.textAlign="center";
 	  
-MULTIPLIER = .5;
+MULTIPLIER_DOWN = 0.5;
+MULTIPLIER_UP   = 1  ;
 
 var attributeCurrent  = [0., 0., 0., 0.];
 var attributeFloor    = new Array(Object.keys(Attributes).length);
@@ -134,10 +135,6 @@ function deathPrint(ripsign)
 
 function checkDeath()
 {
-    /*if (explosion == 5) {
-        explosion = 0;
-        return EXPLODE;        
-    }*/
     if (attributeCurrent[Attributes.HUNGER] < attributeFloor[Attributes.HUNGER]){
 		deathPrint("Your watermelon exploded from eating too much!");}
     if (attributeCurrent[Attributes.HUNGER] > attributeCeiling[Attributes.HUNGER]){
@@ -154,7 +151,7 @@ function checkDeath()
 		deathPrint("Your watermelon died from excitement!");}
     if (attributeCurrent[Attributes.BOREDOM] > attributeCeiling[Attributes.BOREDOM]){ 
 		deathPrint("Your watermelon died from boredom!");}
-};
+}
 
 function checkStatus()
 {
@@ -284,14 +281,17 @@ function updateTicker()
 	}
 }
 
+function attributeDown(attribute) { attributeCurrent[attribute] -= attributeDecrease[attribute] * MULTIPLIER_DOWN; }
+function attributeUp  (attribute) { attributeCurrent[attribute] += attributeIncrease[attribute] * MULTIPLIER_UP  ; }
+
 function feed() 
 {
 	if(dead == false)
 	{
-		attributeCurrent[Attributes.HUNGER] -= attributeDecrease[Attributes.HUNGER];
-		attributeCurrent[Attributes.FATIGUE] += attributeIncrease[Attributes.FATIGUE] * MULTIPLIER;
-		attributeCurrent[Attributes.REBELLIOUSNESS] += attributeIncrease[Attributes.REBELLIOUSNESS] * MULTIPLIER;
-		attributeCurrent[Attributes.BOREDOM] += attributeIncrease[Attributes.BOREDOM] * MULTIPLIER;
+		attributeDown(Attributes.HUNGER);
+		attributeUp(Attributes.FATIGUE);
+		attributeUp(Attributes.REBELLIOUSNESS);
+		attributeUp(Attributes.BOREDOM);
 		updateTicker();
 		checkDeath();
 		if(dead == false){turns++; drawMelon();}
@@ -302,10 +302,10 @@ function sleep()
 {
 	if(dead == false)
 	{
-		attributeCurrent[Attributes.HUNGER] += attributeIncrease[Attributes.HUNGER] * MULTIPLIER;
-		attributeCurrent[Attributes.FATIGUE] -= attributeDecrease[Attributes.FATIGUE];
-		attributeCurrent[Attributes.REBELLIOUSNESS] += attributeIncrease[Attributes.REBELLIOUSNESS] * MULTIPLIER;
-		attributeCurrent[Attributes.BOREDOM] += attributeIncrease[Attributes.BOREDOM] * MULTIPLIER;    
+		attributeUp(Attributes.HUNGER);
+		attributeDown(Attributes.FATIGUE);
+		attributeUp(Attributes.REBELLIOUSNESS);
+		attributeUp(Attributes.BOREDOM);   
 		updateTicker();
 		checkDeath();
 		if(dead == false){turns++; drawMelon();}
@@ -316,10 +316,10 @@ function disc()
 {
 	if(dead == false)
 	{
-		attributeCurrent[Attributes.HUNGER] += attributeIncrease[Attributes.HUNGER] * MULTIPLIER;
-		attributeCurrent[Attributes.FATIGUE] += attributeIncrease[Attributes.FATIGUE] * MULTIPLIER;
-		attributeCurrent[Attributes.REBELLIOUSNESS] -= attributeDecrease[Attributes.REBELLIOUSNESS];
-		attributeCurrent[Attributes.BOREDOM] += attributeIncrease[Attributes.BOREDOM] * MULTIPLIER;   
+		attributeUp(Attributes.HUNGER);
+		attributeUp(Attributes.FATIGUE);
+		attributeDown(Attributes.REBELLIOUSNESS);
+		attributeUp(Attributes.BOREDOM);  
 		updateTicker();
 		checkDeath();
 		if(dead == false){turns++; drawMelon();}
@@ -330,10 +330,10 @@ function play()
 {
 	if(dead == false)
 	{
-		attributeCurrent[Attributes.HUNGER] += attributeIncrease[Attributes.HUNGER] * MULTIPLIER;
-		attributeCurrent[Attributes.FATIGUE] += attributeIncrease[Attributes.FATIGUE] * MULTIPLIER;
-		attributeCurrent[Attributes.REBELLIOUSNESS] += attributeIncrease[Attributes.REBELLIOUSNESS] * MULTIPLIER;
-		attributeCurrent[Attributes.BOREDOM] -= attributeDecrease[Attributes.BOREDOM];
+		attributeUp(Attributes.HUNGER);
+		attributeUp(Attributes.FATIGUE);
+		attributeUp(Attributes.REBELLIOUSNESS);
+		attributeDown(Attributes.BOREDOM);
 		updateTicker();
 		checkDeath();
 		if(dead == false){turns++; drawMelon();}
