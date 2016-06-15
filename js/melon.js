@@ -1,4 +1,3 @@
-
 var c = document.getElementById("output1");
 var ctx = c.getContext("2d");
 
@@ -152,6 +151,7 @@ function checkDeath()
     if (discipline > disciplineTop){ 
 		deathPrint("Your watermelon died from blunt force tramua!");}
     if (fun < funBottom){ 
+		deathPrint("Your watermelon died from blunt force trauma!");}
 		deathPrint("Your watermelon died from boredom!");}
     if (fun > funTop){ 
 		deathPrint("Your watermelon died from excitement!");}
